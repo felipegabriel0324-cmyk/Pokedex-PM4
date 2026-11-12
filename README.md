@@ -1,4 +1,4 @@
-# 🎮 Pokédex — PM3 
+# 🎮 Pokédex — PM4
 
 Projeto acadêmico desenvolvido por estudantes de analise e desenvolvimento de sistema, da Uniamerica, com acompanhamento de um mentor.
 A proposta é construir uma aplicação web inspirada na Pokédex, aplicando conhecimentos de desenvolvimento front-end e colaboração em equipe.
@@ -20,6 +20,7 @@ Em desenvolvimento.
 Atualmente, o projeto conta com a estrutura inicial da página, o cabeçalho estilizado, o logotipo, um campo de pesquisa na interface, cards de pokemons e paginação
 A lógica de pesquisa, filtro, favoritos e a aba minha pokedex esta feita.
 Falta adicionar informações extras ao interagir com o card de cada pokemon.
+E diversos bugs
 
 ## 🛠️ Tecnologias 
 
@@ -35,7 +36,8 @@ Pokedex-PM3
 ├── css
 │ ├── filtro.css
 │ ├── header.css
-│ └── cards.css
+│ ├── cards.css
+│ └── responsividade.css
 ├── images
 │ ├── estrela.svg
 │ ├── estrelaAtivado.svg
