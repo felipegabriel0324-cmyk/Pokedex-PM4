@@ -21,11 +21,40 @@ function buscarTodos() {
 	}
 	Promise.all(requisicoes).then(pokemon => {
 		for(let i = 0;i < 140;i++) {
-			armazemPok.push({pok: pokemon[i].name, id: pokemon[i].id});
+			armazemPok.push({pok: pokemon[i].name, id: pokemon[i].id, type: pokemon[i].types});
 		}
 	});
 	console.log(armazemPok);
 }
+//filtroTipo
+function filtrarPorTipo() {
+	const resultado = [];
+
+	for(let i = 0; i < armazemPok.length; i++) {
+		for(let j = 0; j < armazemPok[i].type.length; j++) {
+			if(armazemPok[i].type[j].type.name == filtro) {
+				resultado.push(armazemPok[i]);
+				break;
+			}
+		}
+	}
+	const inicio = (multiplicador * 20) - 20;
+	const fim = multiplicador * 20;
+	const pagina = resultado.slice(inicio, fim);
+	return pagina;
+}
+//percorreTipo
+function buscarPorTipo() {
+	const requisicoes = [];
+	const pokemonsFiltrados = filtrarPorTipo();
+	for(let i = 0; i < pokemonsFiltrados.length; i++) {
+		requisicoes.push(
+    		fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonsFiltrados[i].id}`).then(response => response.json())
+		);
+	}
+	return requisicoes;
+}
+
 campo_busca.addEventListener("keydown", function(evento) {
 	if(evento.key == "Enter") {					//eventlistener da pesquisa, o usuario digita e quando aperta
 		pesquisando = 1;					//enter o codigo roda, ele busca no armazenPok o pokemon que
@@ -43,17 +72,18 @@ campo_busca.addEventListener("keydown", function(evento) {
 container_tipo.addEventListener("click", function(evento) {
 	if(!evento) return;
 	if(evento.target.dataset.tipo == undefined) return;	//essa func é do filtro, quando ela roda ela pega local que o user
-	filtro = evento.target.dataset.tipo;			//clico e faz a verificacao se é valido, se for ela ve qual foi
+	filtro = evento.target.dataset.tipo;
+	multiplicador = 1;			//clico e faz a verificacao se é valido, se for ela ve qual foi
 	pokedex_container.replaceChildren();			//apertado com o evento.target.dataset.tipo e define o filtro
-	if(estado_ATD){						//limpa os cards e verifica se ta na minhadex ou nao
-		atualizar(buscarATD());				
-		console.log("de cima rodo");
+	if(estado_ATD) {
+    	atualizar(buscarATD());
 	}
-	else{
-		atualizar(buscar());
-		console.log("de baixo rodo");
+	else if(filtro !== "all" && filtro !== "favorites") {
+    	atualizar(buscarPorTipo());
 	}
-	console.log(filtro);
+	else {
+    	atualizar(buscar());
+	}
 });
 console.log(pokemons_ATD);
 function buscar() {
@@ -241,7 +271,12 @@ function gerenCards(evento) { //essa func gerencia o comportamento dos cards dep
 	if(evento) multiplicador = evento.target.getAttribute("data-numero"); //jeito antigo de pegar a data do html, nao sabia
 	if(!multiplicador) return; //se o usuario nao clicar em um numero retorna
 	pokedex_container.replaceChildren(); //tira os cards e
-	atualizar(buscar()); //chama a func pra renderiza tudo denovo
+	if(filtro !== "all" && filtro !== "favorites") {
+    	atualizar(buscarPorTipo());//atualizaComFiltro
+	}
+	else {
+    	atualizar(buscar());//atualizaSemFiltro
+	}
 	console.log(`multiplicador:${multiplicador}`); //essa func tambem serve para desabilitar os numeros embaixo do html quando
 }							//na minhadex
 
