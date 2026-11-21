@@ -16,7 +16,7 @@ async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se 
 		if(pokemonsSalvos) {
 			console.log("Pokemons ja existem, recuperando..."); //Aqui, localStorage para diminuir ainda mais as chamadas
 			armazemPok.push(...JSON.parse(pokemonsSalvos));
-			atualizar(armazemPok);
+			atualizar(buscar());
 			return;
 		}
 		console.log("Pokemons ainda nao salvos, chamando...");
@@ -43,8 +43,8 @@ async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se 
 		}));
 		armazemPok.push(...pokemonsReduzidos);
 		localStorage.setItem("pokemons", JSON.stringify(pokemonsReduzidos));
-		console.log(armazemPok);
 		atualizar(armazemPok);
+		gerarPaginacao()
 	}catch(erro) {
 		console.error("ERR ao carregar os pokemons:", erro);
 	}
@@ -53,19 +53,35 @@ async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se 
 //Bem menos codigo e nao chama a API toda vez
 //Trabalham de uma forma nova agora, usando os dados armazenados em armazemPok
 function buscar() {
+	gerarPaginacao(armazemPok.length);
 	const inicio = (multiplicador * 20) - 20;
 	const fim = multiplicador * 20; //Calcula o inicio e o fim da pagina atual e retorna apenas 20 pokemons
 	return armazemPok.slice(inicio, fim);
 }
+function gerarPaginacao(totalResultados) {
+    const totalPaginas = Math.ceil(totalResultados / 20);
+
+    container_selecao.replaceChildren();
+
+    for(let i = 1; i <= totalPaginas; i++) {
+        const botao = document.createElement("button");
+        botao.textContent = i;
+        botao.classList.add("selecao_estilo");
+        botao.setAttribute("data-numero", i);
+        container_selecao.appendChild(botao);
+    }
+}
 function buscarATD() {
-	return armazemPok.filter(pokemon =>		//Retorna somente os pokemons em que os IDs estao registrados na minha dex
+	const resultado = armazemPok.filter(pokemon =>		//Retorna somente os pokemons em que os IDs estao registrados na minha dex
 		pokemons_ATD.includes(pokemon.id)	//O includes verifica se o ID do pokemon existe no array pokemons_ATD
-	);
+	); 
+	return resultado;
 }
 function buscarFavoritos() {
 	const resultado = armazemPok.filter(pokemon =>	//Percorre os pokemons armazenados e verifica se algum deles possui o tipo
 		pokemons_favoritos.includes(pokemon.id)	//selecionado pelo user
 	);
+	gerarPaginacao(resultado.length);
 	const inicio = (multiplicador * 20) - 20; //aplica a paginacao
 	const fim = multiplicador * 20;
 	return resultado.slice(inicio, fim); //e return resultado
@@ -82,6 +98,7 @@ function filtrarPorTipo() { //func do Erick
 			}
 		}
 	}
+	gerarPaginacao(resultado.length);
 	const inicio = (multiplicador * 20) - 20;
 	const fim = multiplicador * 20;
 	const pagina = resultado.slice(inicio, fim);
@@ -128,11 +145,14 @@ container_tipo.addEventListener("click", function(evento) { //AddEventListener d
 });
 console.log(pokemons_ATD);
 function atualizar(pokemon) { //func principal do codigo, ela é usada para renderizar os cards, muito 'for' usada nela por causa
+	console.log("Recebido pelo atualizar:", pokemon);
+	console.log("Filtro atual:", filtro);
 		for(let x = 0;x < pokemon.length;x++) {
 			let temTipo = false; //esse codigo aqui em baixo faz parte da logica dos favoritos
 			if(filtro == "favorites") {
 				for(let i = 0;i < localStorage.length;i++) { //Recebe um array de Pokémon e cria os cards correspdnts
 					let chave = localStorage.key(i); //A variável temTipo controla se o Pokémon pode ser exibido
+					if(!chave.startsWith("pokemon_")) continue;
 					let objt = JSON.parse(localStorage.getItem(chave)); //com o filtro atual.
 					if(objt.id == pokemon[x].id && objt.fav) temTipo = true;
 				}
@@ -142,8 +162,8 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 					temTipo = true;
 				}
 			}
-			if(filtro != "all") {
-				if(!temTipo) continue; //pode passar caso tenha tipo, senao tiver tipo continua pra prxm renderizacao
+			if(filtro != "all" && filtro != "favorites") {
+    			if(!temTipo) continue;
 			}
 			const type = [];
 
@@ -257,6 +277,7 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 function resgatarPokemons() {
 	for(let i = 0;i < localStorage.length;i++) { //essa func faz oque ela diz... e roda uma vez so no final do codigo
 		let chave = localStorage.key(i);
+		if(!chave.startsWith("pokemon_")) continue;
 		let objt = JSON.parse(localStorage.getItem(chave));
 		if(objt.ATD) pokemons_ATD.push(objt.id); //acho que vou explica algo que pode fica confuso, esse é um if sem chave
 		if(objt.fav) pokemons_favoritos.push(objt.id);	//ele so roda uma linha de codigo e é bem compacto e legal
