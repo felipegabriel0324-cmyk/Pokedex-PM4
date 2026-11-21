@@ -10,29 +10,73 @@ const irParaDex = document.getElementById("irParaDex");
 const container_tipo = document.getElementById("tipo_script");
 const campo_busca = document.getElementById("campo-busca");
 const armazemPok = [];
-const correspondentes = [];
-function buscarTodos() {
-	const requisicoes = [];
-	for(let i = 1;i <= 140;i++) {					//Essa func roda 1 vez no final, ela guarda os 140 pokemons
-		requisicoes.push(					//no armazenPok e so é usada na pesquisa por enquanto
-			fetch(`https://pokeapi.co/api/v2/pokemon/${i}`)
-			.then(response => response.json())
-		);
-	}
-	Promise.all(requisicoes).then(pokemon => {
-		for(let i = 0;i < 140;i++) {
-			armazemPok.push({pok: pokemon[i].name, id: pokemon[i].id, type: pokemon[i].types});
+async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se chama a API toda vez que renderiza os cards
+	try {                  //adicionado tambem try e catch, o codigo continua rodando mesmo que tenha um erro
+		const pokemonsSalvos =  localStorage.getItem("pokemons");
+		if(pokemonsSalvos) {
+			console.log("Pokemons ja existem, recuperando..."); //Aqui, localStorage para diminuir ainda mais as chamadas
+			armazemPok.push(...JSON.parse(pokemonsSalvos));
+			atualizar(armazemPok);
+			return;
 		}
-	});
-	console.log(armazemPok);
+		console.log("Pokemons ainda nao salvos, chamando...");
+		const requisicoes = [];
+		for(let i = 1;i <= 140;i++) {
+			requisicoes.push(
+				fetch(`https://pokeapi.co/api/v2/pokemon/${i}`)
+				.then(response => {
+					if(!response.ok) { //Tratamento de erro da API, se houver um erro 404 o catch nao pega
+						throw new Error(`Erro HTTP: ${response.status}`); //<- entao voce mesmo implementa
+					}
+					return response.json();
+				})
+			);
+		}
+		const pokemon = await Promise.all(requisicoes); //await pausa a func async ate promise.all, dps retorna o valor
+		const pokemonsReduzidos = pokemon.map(p => ({
+			id: p.id,		//Funcao nova .map, ela pega um vetor de objetos e cria outro com os valores dentro
+			name: p.name,		//desse objeto. ta mas porque eu utilizei ela? é pq eu salvo os dados em localStrg
+			types: p.types,		//os objetos dos pokemons sao enormes, por isso eu so pego oque eu preciso deles
+			sprites: {		//ainda nao entendeu? o espaco do localStrg so aguenta 5mb dependendo do navegador
+				front_default: p.sprites.front_default //por isso eu tive que diminuir o tamanho dos objetos
+			}
+		}));
+		armazemPok.push(...pokemonsReduzidos);
+		localStorage.setItem("pokemons", JSON.stringify(pokemonsReduzidos));
+		console.log(armazemPok);
+		atualizar(armazemPok);
+	}catch(erro) {
+		console.error("ERR ao carregar os pokemons:", erro);
+	}
+}
+//As funcoes abaixos sao as funcoes antigas mas reformadas, elas resolvem a renderizacao da paginacao, minhadex e do favoritos
+//Bem menos codigo e nao chama a API toda vez
+//Trabalham de uma forma nova agora, usando os dados armazenados em armazemPok
+function buscar() {
+	const inicio = (multiplicador * 20) - 20;
+	const fim = multiplicador * 20; //Calcula o inicio e o fim da pagina atual e retorna apenas 20 pokemons
+	return armazemPok.slice(inicio, fim);
+}
+function buscarATD() {
+	return armazemPok.filter(pokemon =>		//Retorna somente os pokemons em que os IDs estao registrados na minha dex
+		pokemons_ATD.includes(pokemon.id)	//O includes verifica se o ID do pokemon existe no array pokemons_ATD
+	);
+}
+function buscarFavoritos() {
+	const resultado = armazemPok.filter(pokemon =>	//Percorre os pokemons armazenados e verifica se algum deles possui o tipo
+		pokemons_favoritos.includes(pokemon.id)	//selecionado pelo user
+	);
+	const inicio = (multiplicador * 20) - 20; //aplica a paginacao
+	const fim = multiplicador * 20;
+	return resultado.slice(inicio, fim); //e return resultado
 }
 //filtroTipo
-function filtrarPorTipo() {
+function filtrarPorTipo() { //func do Erick
 	const resultado = [];
 
 	for(let i = 0; i < armazemPok.length; i++) {
-		for(let j = 0; j < armazemPok[i].type.length; j++) {
-			if(armazemPok[i].type[j].type.name == filtro) {
+		for(let j = 0; j < armazemPok[i].types.length; j++) { //mudei .type para .types para resolver problema de syntax
+			if(armazemPok[i].types[j].type.name == filtro) {
 				resultado.push(armazemPok[i]);
 				break;
 			}
@@ -45,102 +89,57 @@ function filtrarPorTipo() {
 }
 //percorreTipo
 function buscarPorTipo() {
-	const requisicoes = [];
-	const pokemonsFiltrados = filtrarPorTipo();
-	for(let i = 0; i < pokemonsFiltrados.length; i++) {
-		requisicoes.push(
-    		fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonsFiltrados[i].id}`).then(response => response.json())
-		);
-	}
-	return requisicoes;
+	return filtrarPorTipo();
 }
 
 campo_busca.addEventListener("keydown", function(evento) {
-	if(evento.key == "Enter") {					//eventlistener da pesquisa, o usuario digita e quando aperta
-		pesquisando = 1;					//enter o codigo roda, ele busca no armazenPok o pokemon que
-		for(let i = 0;i < 140;i++) {				//se compara ao digitado ||(ou) que começa com o digitado
-			pokemon = campo_busca.value.toLowerCase();
-			if(pokemon == armazemPok[i].pok || armazemPok[i].pok.startsWith(pokemon)) {
-				correspondentes.push(armazemPok[i].id);
-			}
-		}
+	if(evento.key == "Enter") {
+		pesquisando = 1;
+		const termo = campo_busca.value.toLowerCase().trim();
+		const correspondentes = armazemPok.filter(pokemon => //Filtra os pokemons em que o nome comeca com o que o usuario
+			pokemon.name.startsWith(termo)		     //digitou
+		);
 		pokedex_container.replaceChildren();
-		atualizar(buscarPesquisa());
-		correspondentes.length = 0;
-	}else if(campo_busca.value) pesquisando = 0;
+		atualizar(correspondentes);
+	}else if(campo_busca.value) {
+		pesquisando = 0;
+	}
 });
-container_tipo.addEventListener("click", function(evento) {
-	if(!evento) return;
-	if(evento.target.dataset.tipo == undefined) return;	//essa func é do filtro, quando ela roda ela pega local que o user
-	filtro = evento.target.dataset.tipo;
-	multiplicador = 1;			//clico e faz a verificacao se é valido, se for ela ve qual foi
-	pokedex_container.replaceChildren();			//apertado com o evento.target.dataset.tipo e define o filtro
+container_tipo.addEventListener("click", function(evento) { //AddEventListener dos filtros
+	if(!evento) return;				    //quando o usuario nao aperta em um filtro mas na caixa pai dos filtros
+	if(evento.target.dataset.tipo == undefined) return;
+	//verifica se o elemento clicado possui data-tipo
+	//se nao possuir interrompe a execucao para evitar alterar o filtro
+	filtro = evento.target.dataset.tipo;		    //pega o tipo que o usuario clicou
+	multiplicador = 1;			//reinicia a paginacao para comecar pela primeira pagina do novo filtro
+	pokedex_container.replaceChildren();    //remove os cards anteriores
 	if(estado_ATD) {
-    	atualizar(buscarATD());
+    		atualizar(buscarATD());			    //Aqui nessa parte reside a logica que cuida dos locais que o user clica
+	}						    //como quando o usuario esta na minha dex
+	else if(filtro !== "all" && filtro !== "favorites") {	//ou quando ele clica em all ou favorites
+    		atualizar(buscarPorTipo());			//nesse caso ele nao clica em all ou favorites, por isso se chama a
+	}							//a func de buscarPorTipo()
+	else if(filtro === "favorites") {		//Caso especial dos favorites
+		atualizar(buscarFavoritos());		//chama a func buscarFavoritos() para resolver esse caso
 	}
-	else if(filtro !== "all" && filtro !== "favorites") {
-    	atualizar(buscarPorTipo());
-	}
-	else {
-    	atualizar(buscar());
+	else {						//Aqui um else de ultimo caso
+    		atualizar(buscar());
 	}
 });
 console.log(pokemons_ATD);
-function buscar() {
-	let x = multiplicador * 20;				//func da busca da api, usada bastante no codigo pra varias chamadas
-	let y = x - 19;						//ou seja o fetch ta sendo chamado varias vezes no codigo
-	const requisicoes = [];					//oque ta errado, x e y sao vars auxiliares, a multiplicador mexe
-	for(;y <= x;y++) {					//com os numeros embaixo do html(1,2,3,4,5,6,7)
-		requisicoes.push(
-			fetch(`https://pokeapi.co/api/v2/pokemon/${y}`)
-			.then(response => response.json())
-		);
-	}
-	return requisicoes;
-}
-function buscarATD() {
-	for(let i = 0;i < pokemons_ATD.length;i++) {
-		for(let x = 0;x < pokemons_ATD.length - 1 - i;x++) { //mesma coisa que a busca so que agora tem um bubblesort
-			if(pokemons_ATD[x] > pokemons_ATD[x+1]) {    //e é exclusivo da minhadex, nao usa o multiplicador, no lugar
-				let temp = pokemons_ATD[x];	     //usa o bubblesort para organizar os pokemons e usa o localStrg
-				pokemons_ATD[x] = pokemons_ATD[x+1];  
-				pokemons_ATD[x+1] = temp;
-			}
-		}
-	}
-	const requisicoes = [];
-	for(let i = 0;i < pokemons_ATD.length;i++) {
-		requisicoes.push(
-			fetch(`https://pokeapi.co/api/v2/pokemon/${pokemons_ATD[i]}`)
-			.then(response => response.json())
-		);
-	}
-	return requisicoes;
-}
-function buscarPesquisa() {
-	const requisicoes = [];
-	for(let i = 0;i < correspondentes.length;i++) { //mesma coisa que a busca mas exclusivo da pesquisa 
-		requisicoes.push(
-			fetch(`https://pokeapi.co/api/v2/pokemon/${correspondentes[i]}`) 
-			.then(response => response.json())
-		);
-	}
-	return requisicoes;
-}
-function atualizar(requisicoes) { //func principal do codigo, ela é usada para renderizar os cards, muito 'for' usada nela por causa
-	Promise.all(requisicoes).then(pokemon => {		//dos tipos
+function atualizar(pokemon) { //func principal do codigo, ela é usada para renderizar os cards, muito 'for' usada nela por causa
 		for(let x = 0;x < pokemon.length;x++) {
 			let temTipo = false; //esse codigo aqui em baixo faz parte da logica dos favoritos
-			if(filtro == "favorites") { //so roda se filtro for favorites
-				for(let i = 0;i < localStorage.length;i++) { //entao percorre o localStorage pelos pokemons favoritds
-					let chave = localStorage.key(i); //pega a chave do localStorage
-					let objt = JSON.parse(localStorage.getItem(chave)); //e usa ela para pegar o objt do pok
-					if(objt.id == pokemon[x].id && objt.fav) temTipo = true; //e finalmente verifica se o pok
-				}								//ta favoritado ou nao ja que ele
-			}									//pode estar no localStrg pelo ATD
+			if(filtro == "favorites") {
+				for(let i = 0;i < localStorage.length;i++) { //Recebe um array de Pokémon e cria os cards correspdnts
+					let chave = localStorage.key(i); //A variável temTipo controla se o Pokémon pode ser exibido
+					let objt = JSON.parse(localStorage.getItem(chave)); //com o filtro atual.
+					if(objt.id == pokemon[x].id && objt.fav) temTipo = true;
+				}
+			}
 			for(let i = 0;i < pokemon[x].types.length;i++) {
-				if(pokemon[x].types[i].type.name == filtro) { //logica do filtro, se o pokemon que ta sendo renderizd
-					temTipo = true;			//se compara ao filtro usado pelo usuario, se sim ent...
+				if(pokemon[x].types[i].type.name == filtro) {
+					temTipo = true;
 				}
 			}
 			if(filtro != "all") {
@@ -253,7 +252,6 @@ function atualizar(requisicoes) { //func principal do codigo, ela é usada para 
 				}
 			});
 		}
-	});
 }
 
 function resgatarPokemons() {
@@ -261,21 +259,24 @@ function resgatarPokemons() {
 		let chave = localStorage.key(i);
 		let objt = JSON.parse(localStorage.getItem(chave));
 		if(objt.ATD) pokemons_ATD.push(objt.id); //acho que vou explica algo que pode fica confuso, esse é um if sem chave
-		if(objt.fav) pokemons_favoritos.push(objt.fav);	//ele so roda uma linha de codigo e é bem compacto e legal
+		if(objt.fav) pokemons_favoritos.push(objt.id);	//ele so roda uma linha de codigo e é bem compacto e legal
 		console.log(`chave:${chave} fav:${objt.fav} ATD:${objt.ATD} id:${objt.id}`);
 	}
 }
 
-function gerenCards(evento) { //essa func gerencia o comportamento dos cards dependendo do estado_ATD 
+function gerenCards(evento) { //essa func gerencia o comportamento dos cards, tem a ver com os numeros embaixo do html(1,2,3,4,5,6,7)
 	if(estado_ATD == 1) return; //se tiver na minhadex retorna
 	if(evento) multiplicador = evento.target.getAttribute("data-numero"); //jeito antigo de pegar a data do html, nao sabia
 	if(!multiplicador) return; //se o usuario nao clicar em um numero retorna
 	pokedex_container.replaceChildren(); //tira os cards e
 	if(filtro !== "all" && filtro !== "favorites") {
-    	atualizar(buscarPorTipo());//atualizaComFiltro
+    		atualizar(buscarPorTipo());//atualizaComFiltro
+	}
+	else if(filtro === "favorites") {
+		atualizar(buscarFavoritos());
 	}
 	else {
-    	atualizar(buscar());//atualizaSemFiltro
+	    	atualizar(buscar());//atualizaSemFiltro
 	}
 	console.log(`multiplicador:${multiplicador}`); //essa func tambem serve para desabilitar os numeros embaixo do html quando
 }							//na minhadex
@@ -294,4 +295,3 @@ irParaDex.addEventListener("click", function() {
 });
 buscarTodos();
 resgatarPokemons();
-atualizar(buscar());
