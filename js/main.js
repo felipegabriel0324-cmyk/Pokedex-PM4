@@ -75,7 +75,11 @@ function buscarATD() {
 	const resultado = armazemPok.filter(pokemon =>		//Retorna somente os pokemons em que os IDs estao registrados na minha dex
 		pokemons_ATD.includes(pokemon.id)	//O includes verifica se o ID do pokemon existe no array pokemons_ATD
 	); 
-	return resultado;
+	resultado.sort((a, b) => a.id - b.id);
+	gerarPaginacao(resultado.length);
+	const inicio = (multiplicador * 20) - 20;
+	const fim = multiplicador * 20;
+	return resultado.slice(inicio, fim);
 }
 function buscarFavoritos() {
 	const resultado = armazemPok.filter(pokemon =>	//Percorre os pokemons armazenados e verifica se algum deles possui o tipo
@@ -113,6 +117,12 @@ campo_busca.addEventListener("keydown", function(evento) {
 	if(evento.key == "Enter") {
 		pesquisando = 1;
 		const termo = campo_busca.value.toLowerCase().trim();
+		if(!termo){
+			multiplicador = 1;
+			pokedex_container.replaceChildren();
+			atualizar(buscar());
+			return; 
+		}
 		const correspondentes = armazemPok.filter(pokemon => //Filtra os pokemons em que o nome comeca com o que o usuario
 			pokemon.name.startsWith(termo)		     //digitou
 		);
@@ -286,7 +296,12 @@ function resgatarPokemons() {
 }
 
 function gerenCards(evento) { //essa func gerencia o comportamento dos cards, tem a ver com os numeros embaixo do html(1,2,3,4,5,6,7)
-	if(estado_ATD == 1) return; //se tiver na minhadex retorna
+	if(estado_ATD == 1) {
+    	multiplicador = evento.target.getAttribute("data-numero");
+    	pokedex_container.replaceChildren();
+    	atualizar(buscarATD());
+    return;
+	}
 	if(evento) multiplicador = evento.target.getAttribute("data-numero"); //jeito antigo de pegar a data do html, nao sabia
 	if(!multiplicador) return; //se o usuario nao clicar em um numero retorna
 	pokedex_container.replaceChildren(); //tira os cards e
@@ -306,11 +321,13 @@ container_selecao.addEventListener("click", gerenCards); //eventlistener dos num
 							//gerenCards ou seja, a gerenCards mexe com os numeros embaixo do html
 irParaDex.addEventListener("click", function() {
 	if(estado_ATD == 0) {			//bem simples, ela é o eventlistener da minhadex, e muda a var estado_ATD para 1
+		multiplicador = 1; //RESETA O MULTIPLICADOR
 		estado_ATD = 1;			//se era 0, e para 0 se era 1
 		pokedex_container.replaceChildren(); //tira cards
 		atualizar(buscarATD()); //renderiza com buscarATD
 	}else{
 		estado_ATD = 0; //volta pro estado de antes
+		multiplicador = 1; //RESETA O MULTIPLICADOR
 		gerenCards(); //e ta aqui o motivo de eu ter criado uma func separada no lugar de criar dentro do addeventlistener
 	}
 });
