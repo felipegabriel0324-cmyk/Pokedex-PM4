@@ -37,6 +37,9 @@ async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se 
 			id: p.id,		//Funcao nova .map, ela pega um vetor de objetos e cria outro com os valores dentro
 			name: p.name,		//desse objeto. ta mas porque eu utilizei ela? é pq eu salvo os dados em localStrg
 			types: p.types,		//os objetos dos pokemons sao enormes, por isso eu so pego oque eu preciso deles
+			height: p.height,
+			weight: p.weight,
+			abilities: p.abilities,
 			sprites: {		//ainda nao entendeu? o espaco do localStrg so aguenta 5mb dependendo do navegador
 				front_default: p.sprites.front_default //por isso eu tive que diminuir o tamanho dos objetos
 			}
@@ -154,7 +157,7 @@ container_tipo.addEventListener("click", function(evento) { //AddEventListener d
 	}
 });
 console.log(pokemons_ATD);
-function atualizar(pokemon) { //func principal do codigo, ela é usada para renderizar os cards, muito 'for' usada nela por causa
+function atualizar(pokemon) { //func principal do codigo
 	console.log("Recebido pelo atualizar:", pokemon);
 	console.log("Filtro atual:", filtro);
 		for(let x = 0;x < pokemon.length;x++) {
@@ -203,6 +206,7 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 			let ATDbutton = document.createElement("button");
 			ATDbutton.classList.add("ATD-button");
 
+			div1.dataset.id = pokemon[x].id;
 			id.textContent = `#${pokemon[x].id}`; //dai adiciona o conteudo
 			icon.src = "images/estrela.svg";
 			img.src = pokemon[x].sprites.front_default;
@@ -282,6 +286,8 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 				}
 			});
 		}
+	console.log("disparndoevento");
+	window.dispatchEvent(new CustomEvent("cardsAtualizados"));
 }
 
 function resgatarPokemons() {
