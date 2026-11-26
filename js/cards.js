@@ -31,7 +31,12 @@ window.addEventListener("cardsAtualizados", (e) => {
 			divCoberturaModal.appendChild(div1Modal);
 
 			let divIdNomeModal = document.createElement("div");
+			divIdNomeModal.classList.add("IdNomeModal");
 			divModal.appendChild(divIdNomeModal);
+
+			let divTypes = document.createElement("div");
+			divTypes.classList.add("divTypesModal");
+			divModal.appendChild(divTypes);
 
 			let idModal = document.createElement("a");
 			idModal.classList.add("modalId");
@@ -45,7 +50,7 @@ window.addEventListener("cardsAtualizados", (e) => {
 
 			let heightModal = document.createElement("a");
 			heightModal.classList.add("modalHeight");
-			heightModal.textContent = pokemon.height;
+			heightModal.textContent = "Height m:0" + pokemon.height;
 			divModal.appendChild(heightModal);
 
 			let weightModal = document.createElement("a");
@@ -65,7 +70,7 @@ window.addEventListener("cardsAtualizados", (e) => {
 				type[i].classList.add(pokemon.types[i].type.name);
 				type[i].classList.add("pokemon-type");
 				type[i].textContent = pokemon.types[i].type.name;
-				divModal.appendChild(type[i]);
+				divTypes.appendChild(type[i]);
 			}
 
 			for(let i = 0;i < pokemon.abilities.length;i++) {
