@@ -12,7 +12,10 @@
 	border-radius:20px;
 	border-color:rgba(0,0,0,0.2);
 	background-color:#ffffff;
-	box-shadow:5px 10px 15px rgba(0,0,0,0.2);
+	box-shadow:5px 10px 15px rgba(0,0,0,0.2);]
+}
+.pokemon-card:hover {
+	cursor:pointer;
 }
 .id-estrela {		/*essa class controla a div que tem o id e o icone da estrela */
 	display:flex;
@@ -73,6 +76,9 @@
 	margin:20px;
 	padding:10px 40px 10px 40px;
 	font-weight:700;
+}
+.ATD-button:hover {
+	cursor:pointer;
 }
 .selecao {
 	display:flex;

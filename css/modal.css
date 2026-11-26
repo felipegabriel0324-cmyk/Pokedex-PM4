@@ -41,24 +41,51 @@
 	display:flex;
 	align-items:center;
 	justify-content:center;
+	flex-grow:1;
+	content-fit:contain;
 }
 .IdNomeModal {
+	display:flex;
+	flex-direction:column;
 }
 .divTypes {
 }
 .modalId {
+	display:flex;
+	align-items:flex-start;
+	color:#ff0000;
+	font-size:48px;
 }
 .modalName {
+	display:flex;
+	align-items:flex-end;
+	text-transform:uppercase;
+	font-size:24px;
 }
 .modalHeight {
+	font-style:italic;
+	font-weight:bold;
 }
 .modalWeight {
+	font-style:italic;
+	font-weight:bold;
 }
 .imgModal {
+	display:flex;
+	flex-grow:1;
+	max-width:100%;
+	max-height:100%;
 }
-.modalType {
+.modalType { /*nao usado*/
 }
 .modalAbilities {
+	font-size:18px;
+	font-style:italic;
+	font-weight:bold;
 }
-.sairModal {
+.modalAbility {
+	border:2px solid black;
+	border-radius:10px;
+	padding:10px;
+	font-weight:bold;
 }

@@ -248,7 +248,8 @@ function atualizar(pokemon) { //func principal do codigo
 				ATDbutton.textContent = "+ ADD TO DEX";
 			}
 
-			iconButton.addEventListener("click", function() { //logica do favorito, muda o icone da estrela e salva no
+			iconButton.addEventListener("click", function(event) { //logica do favorito, muda o icone da estrela e salva no
+				event.stopPropagation();
 				if(estadoFavoritado.fav) {			//objeto estadoFavoritado a mudanca
 					icon.src = "images/estrela.svg";
 					estadoFavoritado.fav = 0;
@@ -267,7 +268,8 @@ function atualizar(pokemon) { //func principal do codigo
 				}
 			});
 
-			ATDbutton.addEventListener("click", function() { //logica do ATD, funciona similarmente ao favorito
+			ATDbutton.addEventListener("click", function(event) { //logica do ATD, funciona similarmente ao favorito
+				event.stopPropagation();
 				if(estadoFavoritado.ATD) {		//usa a mesma logica e o mesmo objeto
 					ATDbutton.textContent = "+ ADD TO DEX";
 					estadoFavoritado.ATD = 0;

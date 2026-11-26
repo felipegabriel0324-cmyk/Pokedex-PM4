@@ -50,12 +50,13 @@ window.addEventListener("cardsAtualizados", (e) => {
 
 			let heightModal = document.createElement("a");
 			heightModal.classList.add("modalHeight");
-			heightModal.textContent = "Height m:0" + pokemon.height;
+			heightModal.textContent = "Altura: " + pokemon.height + "0 cm";
 			divModal.appendChild(heightModal);
 
 			let weightModal = document.createElement("a");
 			weightModal.classList.add("modalWeight");
-			weightModal.textContent = pokemon.weight;
+			let pokemonweight =  pokemon.weight / 10;
+			weightModal.textContent = "Peso: " + pokemonweight + " kg";
 			divModal.appendChild(weightModal);
 
 			let imgModal = document.createElement("img");
@@ -73,9 +74,14 @@ window.addEventListener("cardsAtualizados", (e) => {
 				divTypes.appendChild(type[i]);
 			}
 
+			let modalAbilities = document.createElement("a");
+			modalAbilities.classList.add("modalAbilities");
+			modalAbilities.textContent = "Habilidades:";
+			divModal.appendChild(modalAbilities);
+
 			for(let i = 0;i < pokemon.abilities.length;i++) {
 				abilities[i] = document.createElement("span");
-				abilities[i].classList.add("modalAbilities");
+				abilities[i].classList.add("modalAbility");
 				abilities[i].textContent = pokemon.abilities[i].ability.name;
 				divModal.appendChild(abilities[i]);
 			}
