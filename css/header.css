@@ -83,3 +83,11 @@ header {
 .minhapokedex:hover {
 	cursor:pointer;
 }
+
+.dex-Ativa {
+    background-color: #e70000;
+    color: #f8f8f8;
+    border-color: #330000;
+    box-shadow: 0px 4px 0px #000000;
+    transform: translateY(2px);
+}

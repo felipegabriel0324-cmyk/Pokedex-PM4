@@ -44,3 +44,20 @@
 	background-color:#AC9D93;
 	box-shadow:5px 10px 15px rgba(0, 0, 0, 0.7);
 }
+
+.selecao_estilo {
+    padding: 10px 15px;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    cursor: pointer;
+	box-shadow: 0px 5px 0px #000000;
+}
+/*PARA A PAGINA SELECIONADA*/
+.pagina-Ativa {
+    color: #ff0000;
+    box-shadow: 0px 2px 0px #1b1b1b;
+    transform: translateY(2px);
+}
