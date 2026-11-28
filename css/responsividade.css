@@ -1,209 +1,452 @@
-@media (max-width: 1024px) {
-    .pokemon-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
+
+@media (max-width: 1200px) {
+    .card-box {
+        grid-template-columns: repeat(4, 200px);
+        gap: 15px;
+        margin: 15px;
     }
 
-    .pokemon-card img {
-        max-width: 100px;
-    }
-}
-
-@media (max-width: 768px) {
-
-    .BarraSup {
-        position: relative;
-        min-height: 80px;
-        height: auto;
-        padding: 8px 12px;
-        box-sizing: border-box;
-        align-items: center;
-        gap: 8px;
+    .pokemon-card {
+        padding: 12px;
     }
 
-    .espaco {
-        display: none;
+    .pokemon-img {
+        width: 150px;
+        height: 150px;
     }
 
-    .caixa-logoTitulo {
-        align-items: center;
-        flex-shrink: 0;
+    .icon {
+        width: 25px;
+        height: 25px;
     }
 
-    .logo {
-        width: 45px;
-        height: 45px;
-        margin-top: 0;
-    }
-
-    .titulo h1 {
-        font-size: 16px;
-        margin: 0;
-    }
-
-    .barraPesquisa {
-        position: static;
-        transform: none;
-        width: 100%;
-        max-width: 240px;
-        min-width: 0;
-        height: 34px;
-        margin: 0;
-        padding: 0 10px;
-        box-sizing: border-box;
+    .ATD-button {
+        margin: 15px;
+        padding: 8px 25px;
         font-size: 12px;
     }
 
-    .containerPesquisa {
-        flex: 1;
-        min-width: 0;
+    .pokemon-name {
+        font-size: 20px;
     }
 
-    .BarraInf {
-        padding: 0 10px;
-        justify-content: center;
+    .types-style {
+        gap: 2px;
         flex-wrap: wrap;
     }
 
-    .BarraInf::before {
-        left: 10px;
-        right: 10px;
-    }
-
-    .botaoBarra {
-        flex: 1 1 0;
-        width: auto;
-        min-width: 0;
+    .pokemon-type {
+        padding: 5px 10px;
         font-size: 12px;
     }
 
-    .filtro-tipos {
-        padding: 12px 8px;
-        gap: 6px;
+    /* HEADER */
+
+    header {
+        padding: 10px 20px;
+        gap: 15px;
     }
 
-    .filtro-tipo {
-        padding: 6px 10px;
-        font-size: 11px;
+    .logo {
+        width: 50px;
     }
 
-    .listagem {
-        padding: 25px 0;
+    .titulo-h1 {
+        font-size: 25px;
     }
 
-    .listagem h2 {
-        font-size: 26px;
+    .campo-busca {
+        max-width: 200px;
+        padding: 8px;
+        font-size: 10px;
     }
 
-    .pokemon-grid {
-        width: 92%;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .minhapokedex {
+        padding: 8px 15px;
+        font-size: 15px;
+    }
+
+    /* FILTRO */
+
+    .filtro {
+        gap: 5px;
+        padding: 5px;
+    }
+
+    .text-type {
+        font-size: 15px;
+    }
+
+    .tipo {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 900px) {
+    .card-box {
+        grid-template-columns: repeat(3, minmax(0, 200px));
+        justify-content: center;
+        justify-items: stretch;
         gap: 12px;
+        margin: 15px 0;
     }
 
     .pokemon-card {
         min-width: 0;
-        padding: 8px;
-    }
-
-    .pokemon-card img {
-        width: 100%;
-        max-width: 120px;
-        height: auto;
-        aspect-ratio: 1 / 1;
-        object-fit: contain;
-    }
-
-    .pokemon-nome {
-        font-size: 16px;
-        overflow-wrap: anywhere;
-    }
-
-    .pokemon-types {
-        flex-wrap: wrap;
-        gap: 4px;
-    }
-
-    .pokemon-types span {
-        padding: 4px 8px;
-        font-size: 11px;
-    }
-
-    .pokemon-add {
-        width: 100%;
-        max-width: 200px;
-        padding: 8px 4px;
-        font-size: 12px;
         box-sizing: border-box;
     }
 
-    footer {
-        min-height: 100px;
-        height: auto;
-        padding: 15px 12px;
-        box-sizing: border-box;
+    header {
+        padding: 10px 15px;
         gap: 10px;
     }
 
-    footer h1 {
-        margin: 0;
-        font-size: 16px;
+    .titulo {
+        margin-left: 0;
     }
 
-    .github {
-        margin-left: 0;
+    .logo {
+        width: 40px;
+    }
+
+    .titulo-h1 {
+        font-size: 18px;
+    }
+
+    .bolas {
+        gap: 4px;
+    }
+
+    .bola-vermelha,
+    .bola-amarela,
+    .bola-verde {
+        width: 12px;
+        height: 12px;
+        border-width: 2px;
+    }
+
+    .campo-busca {
+        width: 100%;
+        max-width: 200px;
+        height: 38px;
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .campo-busca::placeholder {
+        font-size: 14px;
+    }
+
+    .minhapokedex {
+        margin-right: 0;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+.card-box {
+    grid-template-columns: repeat(3, minmax(0, 150px));
+    justify-content: center;
+    justify-items: stretch;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.pokemon-card {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+    .pokemon-img {
+        width: 100%;
+        height: auto;
+    }
+
+    /* HEADER */
+
+    header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .titulo {
+        width: auto;
+        justify-content: center;
+        margin: 0;
+    }
+
+    .campo-busca {
+        width: 100%;
+        max-width: 350px;
+        box-sizing: border-box;
+    }
+
+    .minhapokedex {
+        margin: 0;
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* FILTRO */
+
+    .filtro {
+        height: 55px;
+        gap: 6px;
+        padding: 5px 10px;
+    }
+
+    .text-type {
+        font-size: 13px;
+        margin-left: 5px;
+    }
+
+    .tipo {
+        min-width: 75px;
+        padding: 7px 10px;
+        font-size: 10px;
+        border-width: 2px;
+    }
+
+    /* TIPOS DOS POKÉMONS */
+
+    .types-style {
+        min-height: 42px;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .pokemon-type {
+        padding: 4px 6px;
+        font-size: 9px;
+    }
+
+    /* BOTÃO ADD TO DEX */
+
+    .ATD-button {
+        margin: 8px;
+        padding: 6px 12px;
+        font-size: 10px;
+        border-radius: 8px;
+    }
+
+/* PAGINAÇÃO */
+
+    .selecao_estilo {
+        padding: 6px 9px;
+        font-size: 25px;
+        border-width: 2px;
+        box-shadow: 0px 3px 0px #000000;
+    }
+
+    .pagina-Ativa {
+        box-shadow: 0px 1px 0px #000000;
+        transform: translateY(2px);
+    }    
+}
+
+@media (max-width: 480px) {
+    /* CARDS */
+
+    .card-box {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 180px));
+        justify-content: center;
+        gap: 8px;
+        margin: 8px 0;
+    }
+
+    .pokemon-card {
+        width: 100%;
+        min-width: 0;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    .pokemon-img {
+        width: 100%;
+        height: auto;
+    }
+
+    .pokemon-name {
+        font-size: 14px;
+    }
+
+    .pokemon-type {
+        padding: 3px 5px;
+        font-size: 8px;
+    }
+
+    .ATD-button {
+        margin: 5px;
+        padding: 5px 8px;
+        font-size: 9px;
+    }
+
+    .icon-button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* HEADER */
+
+    header {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .logo {
+        width: 32px;
+    }
+
+    .titulo-h1 {
+        font-size: 15px;
+    }
+
+    .bolas {
+        gap: 3px;
+    }
+
+    .bola-vermelha,
+    .bola-amarela,
+    .bola-verde {
+        width: 10px;
+        height: 10px;
+        border-width: 2px;
+    }
+
+    .campo-busca {
+        height: 32px;
+        max-width: 280px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .campo-busca::placeholder {
+        font-size: 12px;
+    }
+
+    .minhapokedex {
+        font-size: 11px;
+        padding: 5px;
     }
 }
 
 @media (max-width: 380px) {
 
-    .BarraSup {
-        gap: 5px;
-        padding: 8px;
-    }
+    /* CARDS */
 
-    .logo {
-        width: 36px;
-        height: 36px;
-    }
-
-    .titulo h1 {
-        font-size: 13px;
-    }
-
-    .barraPesquisa {
-        font-size: 11px;
-        padding: 0 6px;
-    }
-
-    .pokemon-grid {
-        width: 94%;
-        gap: 8px;
+    .card-box {
+        grid-template-columns: repeat(2, minmax(0, 155px));
+        gap: 6px;
+        margin: 8px 0;
     }
 
     .pokemon-card {
         padding: 6px;
     }
 
-    .pokemon-nome {
-        font-size: 14px;
+    .pokemon-name {
+        font-size: 12px;
     }
 
-    .pokemon-types span {
-        padding: 4px 6px;
-        font-size: 10px;
+    .pokemon-type {
+        padding: 3px 4px;
+        font-size: 7px;
     }
 
-    .filtro-tipo {
-        padding: 5px 8px;
-        font-size: 10px;
+    .ATD-button {
+        margin: 4px;
+        padding: 5px 6px;
+        font-size: 8px;
     }
 
-    footer h1 {
+    /* HEADER */
+
+    .logo {
+        width: 28px;
+    }
+
+    .titulo-h1 {
         font-size: 13px;
     }
 
-    .github {
-        font-size: 12px;
+    .campo-busca {
+        max-width: 240px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .campo-busca::placeholder {
+        font-size: 11px;
+    }
+
+    .minhapokedex {
+        font-size: 10px;
+    }
+
+    /* FILTRO */
+
+    .filtro {
+        gap: 4px;
+        padding: 5px;
+    }
+
+    .text-type {
+        font-size: 11px;
+    }
+
+    .tipo {
+        min-width: 65px;
+        padding: 6px 8px;
+        font-size: 9px;
+    }
+
+    /* PAGINAÇÃO */
+
+    .selecao_estilo {
+        padding: 5px 7px;
+        font-size: 20px;
+        box-shadow: 0px 2px 0px #000000;
+    }
+
+    .pagina-Ativa {
+        box-shadow: 0px 1px 0px #000000;
+        transform: translateY(1px);
+    }
+}
+
+@media (max-width: 280px) {
+.selecao_estilo {
+        padding: 2px 5px;
+        font-size: 15px;
+        box-shadow: 0px 2px 0px #000000;
+    }
+
+    .pagina-Ativa {
+        box-shadow: 0px 1px 0px #000000;
+        transform: translateY(1px);
+    }
+
+}
+
+@media (max-width: 200px) {
+.selecao_estilo {
+        padding: 1px 2px;
+        font-size: 10px;
+        box-shadow: 0px 2px 0px #000000;
     }
 }

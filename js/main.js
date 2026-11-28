@@ -73,6 +73,9 @@ function gerarPaginacao(totalResultados) {
         botao.textContent = i;
         botao.classList.add("selecao_estilo");
         botao.setAttribute("data-numero", i);
+		if(i == multiplicador) {
+    		botao.classList.add("pagina-Ativa");
+		}
         container_selecao.appendChild(botao);
     }
 }
@@ -335,11 +338,17 @@ irParaDex.addEventListener("click", function() {
 	if(estado_ATD == 0) {			//bem simples, ela é o eventlistener da minhadex, e muda a var estado_ATD para 1
 		multiplicador = 1; //RESETA O MULTIPLICADOR
 		estado_ATD = 1;			//se era 0, e para 0 se era 1
+
+		irParaDex.classList.add("dex-Ativa");/*para conseguir estilziar(deixar clicavel)*/
+
 		pokedex_container.replaceChildren(); //tira cards
 		atualizar(buscarATD()); //renderiza com buscarATD
 	}else{
 		estado_ATD = 0; //volta pro estado de antes
 		multiplicador = 1; //RESETA O MULTIPLICADOR
+
+		irParaDex.classList.remove("dex-Ativa");
+
 		gerenCards(); //e ta aqui o motivo de eu ter criado uma func separada no lugar de criar dentro do addeventlistener
 	}
 });

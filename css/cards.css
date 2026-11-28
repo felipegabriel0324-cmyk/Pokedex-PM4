@@ -1,13 +1,15 @@
 .card-box {
-	display:flex;
-	flex-wrap:wrap;
-	justify-content:center;
-	align-items:center;
+    display: grid;
+    grid-template-columns: repeat(5, 220px);
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    gap: 20px;
+    margin: 20px;
 }
 .pokemon-card {
 	display:flex;
 	flex-direction:column;
-	margin:10px;
 	border:2px solid;
 	border-radius:20px;
 	border-color:rgba(0,0,0,0.2);
@@ -42,6 +44,7 @@
 	display:block;
 }
 .pokemon-img {
+	margin: 0 auto;
 	width:200px;
 	height:200px;
 	max-width:100%;
