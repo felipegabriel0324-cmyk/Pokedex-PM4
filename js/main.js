@@ -10,6 +10,9 @@ const irParaDex = document.getElementById("irParaDex");
 const container_tipo = document.getElementById("tipo_script");
 const campo_busca = document.getElementById("campo-busca");
 const armazemPok = [];
+function imagemOficial(id) {
+	return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+}
 async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se chama a API toda vez que renderiza os cards
 	try {                  //adicionado tambem try e catch, o codigo continua rodando mesmo que tenha um erro
 		const pokemonsSalvos =  localStorage.getItem("pokemons");
@@ -46,8 +49,7 @@ async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se 
 		}));
 		armazemPok.push(...pokemonsReduzidos);
 		localStorage.setItem("pokemons", JSON.stringify(pokemonsReduzidos));
-		atualizar(armazemPok);
-		gerarPaginacao()
+		atualizar(buscar());
 	}catch(erro) {
 		console.error("ERR ao carregar os pokemons:", erro);
 	}
@@ -193,6 +195,8 @@ function atualizar(pokemon) { //func principal do codigo
 			let icon = document.createElement("img");
 			icon.classList.add("icon");
 			let img = document.createElement("img");
+			img.loading = "lazy";
+			img.onerror = () => { img.onerror = null; img.src = pokemon[x].sprites.front_default; };
 			img.classList.add("pokemon-img");
 			let name = document.createElement("h2");
 			name.classList.add("pokemon-name");
@@ -209,7 +213,7 @@ function atualizar(pokemon) { //func principal do codigo
 			div1.dataset.id = pokemon[x].id;
 			id.textContent = `#${pokemon[x].id}`; //dai adiciona o conteudo
 			icon.src = "images/estrela.svg";
-			img.src = pokemon[x].sprites.front_default;
+			img.src = imagemOficial(pokemon[x].id);
 			img.alt = pokemon[x].name;
 			name.textContent = pokemon[x].name;
 			for(let i = 0;i < pokemon[x].types.length;i++) {

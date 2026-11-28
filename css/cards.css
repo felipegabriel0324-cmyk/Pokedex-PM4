@@ -12,7 +12,7 @@
 	border-radius:20px;
 	border-color:rgba(0,0,0,0.2);
 	background-color:#ffffff;
-	box-shadow:5px 10px 15px rgba(0,0,0,0.2);]
+	box-shadow:5px 10px 15px rgba(0,0,0,0.2);
 }
 .pokemon-card:hover {
 	cursor:pointer;
@@ -46,6 +46,7 @@
 	height:200px;
 	max-width:100%;
 	display:block;
+	object-fit:contain;
 }
 .pokemon-name {
 	text-transform:capitalize;

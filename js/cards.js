@@ -61,7 +61,7 @@ window.addEventListener("cardsAtualizados", (e) => {
 
 			let imgModal = document.createElement("img");
 			imgModal.classList.add("imgModal");
-			imgModal.src = pokemon.sprites.front_default;
+			imgModal.src = imagemOficial(id);
 			imgModal.alt = pokemon.name;
 			div1Modal.appendChild(imgModal);
 
