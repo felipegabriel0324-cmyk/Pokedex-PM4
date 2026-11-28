@@ -10,6 +10,9 @@ const irParaDex = document.getElementById("irParaDex");
 const container_tipo = document.getElementById("tipo_script");
 const campo_busca = document.getElementById("campo-busca");
 const armazemPok = [];
+function imagemOficial(id) {
+	return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+}
 async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se chama a API toda vez que renderiza os cards
 	try {                  //adicionado tambem try e catch, o codigo continua rodando mesmo que tenha um erro
 		const pokemonsSalvos =  localStorage.getItem("pokemons");
@@ -37,14 +40,16 @@ async function buscarTodos() { //Nova funcao: ela resolve o problema no qual se 
 			id: p.id,		//Funcao nova .map, ela pega um vetor de objetos e cria outro com os valores dentro
 			name: p.name,		//desse objeto. ta mas porque eu utilizei ela? é pq eu salvo os dados em localStrg
 			types: p.types,		//os objetos dos pokemons sao enormes, por isso eu so pego oque eu preciso deles
+			height: p.height,
+			weight: p.weight,
+			abilities: p.abilities,
 			sprites: {		//ainda nao entendeu? o espaco do localStrg so aguenta 5mb dependendo do navegador
 				front_default: p.sprites.front_default //por isso eu tive que diminuir o tamanho dos objetos
 			}
 		}));
 		armazemPok.push(...pokemonsReduzidos);
 		localStorage.setItem("pokemons", JSON.stringify(pokemonsReduzidos));
-		atualizar(armazemPok);
-		gerarPaginacao()
+		atualizar(buscar());
 	}catch(erro) {
 		console.error("ERR ao carregar os pokemons:", erro);
 	}
@@ -157,7 +162,7 @@ container_tipo.addEventListener("click", function(evento) { //AddEventListener d
 	}
 });
 console.log(pokemons_ATD);
-function atualizar(pokemon) { //func principal do codigo, ela é usada para renderizar os cards, muito 'for' usada nela por causa
+function atualizar(pokemon) { //func principal do codigo
 	console.log("Recebido pelo atualizar:", pokemon);
 	console.log("Filtro atual:", filtro);
 		for(let x = 0;x < pokemon.length;x++) {
@@ -193,6 +198,8 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 			let icon = document.createElement("img");
 			icon.classList.add("icon");
 			let img = document.createElement("img");
+			img.loading = "lazy";
+			img.onerror = () => { img.onerror = null; img.src = pokemon[x].sprites.front_default; };
 			img.classList.add("pokemon-img");
 			let name = document.createElement("h2");
 			name.classList.add("pokemon-name");
@@ -206,9 +213,10 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 			let ATDbutton = document.createElement("button");
 			ATDbutton.classList.add("ATD-button");
 
+			div1.dataset.id = pokemon[x].id;
 			id.textContent = `#${pokemon[x].id}`; //dai adiciona o conteudo
 			icon.src = "images/estrela.svg";
-			img.src = pokemon[x].sprites.front_default;
+			img.src = imagemOficial(pokemon[x].id);
 			img.alt = pokemon[x].name;
 			name.textContent = pokemon[x].name;
 			for(let i = 0;i < pokemon[x].types.length;i++) {
@@ -247,7 +255,8 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 				ATDbutton.textContent = "+ ADD TO DEX";
 			}
 
-			iconButton.addEventListener("click", function() { //logica do favorito, muda o icone da estrela e salva no
+			iconButton.addEventListener("click", function(event) { //logica do favorito, muda o icone da estrela e salva no
+				event.stopPropagation();
 				if(estadoFavoritado.fav) {			//objeto estadoFavoritado a mudanca
 					icon.src = "images/estrela.svg";
 					estadoFavoritado.fav = 0;
@@ -266,7 +275,8 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 				}
 			});
 
-			ATDbutton.addEventListener("click", function() { //logica do ATD, funciona similarmente ao favorito
+			ATDbutton.addEventListener("click", function(event) { //logica do ATD, funciona similarmente ao favorito
+				event.stopPropagation();
 				if(estadoFavoritado.ATD) {		//usa a mesma logica e o mesmo objeto
 					ATDbutton.textContent = "+ ADD TO DEX";
 					estadoFavoritado.ATD = 0;
@@ -285,6 +295,8 @@ function atualizar(pokemon) { //func principal do codigo, ela é usada para rend
 				}
 			});
 		}
+	console.log("disparndoevento");
+	window.dispatchEvent(new CustomEvent("cardsAtualizados"));
 }
 
 function resgatarPokemons() {
